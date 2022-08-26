@@ -13,6 +13,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.entity.EntityBreedEvent;
 import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
@@ -53,10 +54,12 @@ public final class BeterBee extends JavaPlugin implements Listener {
 
     }
 
-  //  @EventHandler(priority = EventPriority.LOWEST)
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onSpawn(CreatureSpawnEvent spawnEvent){
-        if (debag){getLogger().info(spawnEvent.getEventName()+"//"+spawnEvent.getEntity() + "//"+spawnEvent.getEntity().getEntitySpawnReason());}
+        if (debag){
+            if(Objects.equals(spawnEvent.getEntity().toString(), "CraftBee")){
+                getLogger().info(spawnEvent.getEventName()+"//"+spawnEvent.getEntity() + "//"+spawnEvent.getEntity().getEntitySpawnReason());}
+        }
         ///////////////////////////////
         if (spawnEvent.getEntity().getEntitySpawnReason() == CreatureSpawnEvent.SpawnReason.BEEHIVE ||spawnEvent.getEntity().getEntitySpawnReason() == CreatureSpawnEvent.SpawnReason.SPAWNER_EGG
         && Objects.equals(spawnEvent.getEntity().toString(), "CraftBee")){
@@ -73,6 +76,8 @@ public final class BeterBee extends JavaPlugin implements Listener {
 
                      }
 
+
+
                      Block ulblock = ulLoc.getBlock();
 
                      if (debag) {
@@ -83,8 +88,15 @@ public final class BeterBee extends JavaPlugin implements Listener {
 
 
                      if (ul.getHoneyLevel() == ul.getMaximumHoneyLevel()) {
-                         bee.setBreed(true);
-                         bee.setLoveModeTicks(20);
+                         if(bee.isAdult()){
+                             if(bee.canBreed())
+                             {
+
+                               bee.setLoveModeTicks(400);
+                             }
+
+                         }
+                         //bee.setBreed(true);
                          //bee.setBaby();
 
                          if (debag) {
@@ -99,5 +111,84 @@ public final class BeterBee extends JavaPlugin implements Listener {
             }
 
         }
+
+          if (spawnEvent.getEntity().getEntitySpawnReason() == CreatureSpawnEvent.SpawnReason.BREEDING && Objects.equals(spawnEvent.getEntity().toString(), "CraftBee"))
+          {
+            Bee bee = (Bee) spawnEvent.getEntity();
+
+            if (debag){getLogger().info( "[bee kids sp]" + bee.getHive().toString());}
+
+              Location ulLoc =   bee.getHive();
+              if(ulLoc !=null) {
+
+                  if (debag) {
+                      getLogger().info("[bee ul]" + ulLoc.toString());
+
+                  }
+
+
+                  Block ulblock = ulLoc.getBlock();
+
+
+                  if (debag) {
+                      getLogger().info("[bee ul]" + ulblock.getType().toString());
+                  }
+
+                  Beehive ul = (Beehive) ulblock.getBlockData();
+                  ul.setHoneyLevel(ul.getHoneyLevel()-1);
+
+
+              }
+          }
+
+    }
+
+    @EventHandler(priority = EventPriority.LOW)
+    public void onEntityBreed(EntityBreedEvent breedEvent){
+        getLogger().info("[bee kids]" + breedEvent.getMother().toString());
+       // if (Objects.equals(breedEvent.getMother().toString(), "CraftBee")) {
+            try {
+                Bee bee = (Bee) breedEvent.getMother();
+                if (debag) {
+                    getLogger().info("[bee kids]" + bee.getHive().toString());
+                }
+
+                Location ulLoc = bee.getHive();
+                if (ulLoc != null) {
+
+                    if (debag) {
+                        getLogger().info("[bee ul]" + ulLoc.toString());
+
+                    }
+
+
+                    Block ulblock = ulLoc.getBlock();
+
+                    if (debag) {
+                        getLogger().info("[bee kids ul]" + ulblock.getType().toString());
+                    }
+
+                    Beehive ul = (Beehive) ulblock.getBlockData();
+
+
+                    if (ul.getHoneyLevel() > 0) {
+
+                        if (debag) {
+                            getLogger().info("[bee kids ul] poziom miodu" + ul.getHoneyLevel());
+                        }
+
+                        ul.setHoneyLevel(ul.getHoneyLevel() - 1);
+
+                        if (debag) {
+                            getLogger().info("[bee kids ul] poziom miodu" + ul.getHoneyLevel());
+                        }
+                    }
+
+                }
+            } catch (Exception e) {
+                getLogger().info( "Błąd " + e.toString());
+                throw new RuntimeException(e);
+            }
+       // }
     }
 }
