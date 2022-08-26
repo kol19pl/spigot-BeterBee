@@ -70,6 +70,7 @@ public final class BeterBee extends JavaPlugin implements Listener {
 
                      if (debag) {
                          getLogger().info("[bee ul]" + ulLoc.toString());
+
                      }
 
                      Block ulblock = ulLoc.getBlock();
