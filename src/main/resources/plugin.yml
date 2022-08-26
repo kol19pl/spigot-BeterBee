@@ -1,0 +1,11 @@
+name: BeterBee
+version: '${project.version}'
+main: beterbee.beterbee.BeterBee
+api-version: 1.19
+prefix: BeterBee
+authors: [ kol19pl ]
+description: BeterBee
+website: none
+load: POSTWORLD
+commands:
+  Bee:
