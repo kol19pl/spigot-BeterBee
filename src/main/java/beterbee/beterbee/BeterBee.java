@@ -1,25 +1,24 @@
 package beterbee.beterbee;
 
+import jdk.javadoc.internal.doclint.HtmlTag;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.type.Beehive;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Bee;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityBreedEvent;
-import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
+import java.util.Random;
 
 public final class BeterBee extends JavaPlugin implements Listener {
 
@@ -40,19 +39,52 @@ public final class BeterBee extends JavaPlugin implements Listener {
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (label.equalsIgnoreCase("Bee")) {
+            if (args[0].equals("atak")){
+                Player target = Bukkit.getPlayerExact(args[1]);
+                if (target == null)
+                {
+                    return false;
+                }
+
+                World world = target.getWorld();
+                double x = 0,y = 0,z = 0;
+                Location location = target.getLocation();
+
+
+                Random random = new Random();
+
+                world.spawnEntity(location.add(1, random.nextGaussian(1, 10),0),EntityType.BEE);
+                return true;
+
+            }
+
             if (sender instanceof Player) {
                 Player player = (Player) sender;
-                player.sendMessage("Bzzzzzzz!!!");
-                return true;
-            } else {
+
+                if (args[0].equals("miud")){
+                    Block bl = player.getTargetBlock(5);
+                    if (bl.getType() == Material.BEEHIVE)
+                    {
+                        Beehive ul = (Beehive) bl;
+                        player.sendMessage("Ten ul ma "+ul.getHoneyLevel()+"miodu!");
+                        return true;
+                    }
+                }
+
+            }
+            else {
                 sender.sendMessage("Bzzzzzzz!!!");
                 return true;
             }
         }
+
+
         return false;
 
 
     }
+
+
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onSpawn(CreatureSpawnEvent spawnEvent){
@@ -135,11 +167,22 @@ public final class BeterBee extends JavaPlugin implements Listener {
                   }
 
                   Beehive ul = (Beehive) ulblock.getBlockData();
-                  ul.setHoneyLevel(ul.getHoneyLevel()-1);
+                  ul.setHoneyLevel(0);
 
 
               }
           }
+
+        if (spawnEvent.getEntity().getEntitySpawnReason() == CreatureSpawnEvent.SpawnReason.CUSTOM){
+            Bee bee = (Bee) spawnEvent.getEntity();
+            bee.setAnger(100);
+            bee.setCanPickupItems(true);
+            bee.setCustomNameVisible(true);
+            bee.setCustomName("Ognista Pszczoła");
+            bee.setFireTicks(800);
+            bee.setGlowing(true);
+
+        }
 
     }
 
