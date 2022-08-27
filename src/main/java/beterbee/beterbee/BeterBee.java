@@ -22,7 +22,7 @@ import java.util.Random;
 
 public final class BeterBee extends JavaPlugin implements Listener {
 
-    Boolean debag = true;
+    Boolean debag = false;
     public int PoziomMiodurozmnazania = 3;
     public int SzansaNaRozmnożenie = 10;
 
@@ -59,6 +59,11 @@ public final class BeterBee extends JavaPlugin implements Listener {
                 return true;
 
             }
+            if (args[0].equals("debag")){
+                debag=true;
+                sender.sendMessage("Debag bzzz włonczono bzzzzz");
+                return true;
+            }
 
             if (sender instanceof Player) {
                 Player player = (Player) sender;
@@ -67,11 +72,15 @@ public final class BeterBee extends JavaPlugin implements Listener {
                     Block bl = player.getTargetBlock(10);
                     if (bl.getType() == Material.BEEHIVE)
                     {
-                        Beehive ul = (Beehive) bl;
-                        player.sendMessage("Ten ul ma "+ul.getHoneyLevel()+"miodu!");
+                        Beehive ul = (Beehive) bl.getBlockData();
+                        player.sendMessage("Ten ul ma "+ul.getHoneyLevel()+" miodu!");
                         return true;
                     }
+                    else {
+                        player.sendMessage("Można zajrzeć tylko do własnoręcznie wykonanyh pasiek");
+                    }
                 }
+
 
             }
             else {
