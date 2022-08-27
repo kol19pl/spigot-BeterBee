@@ -1,11 +1,10 @@
 package beterbee.beterbee;
 
 import jdk.javadoc.internal.doclint.HtmlTag;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.block.EntityBlockStorage;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Beehive;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -16,6 +15,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityBreedEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 import java.util.Random;
@@ -73,7 +73,10 @@ public final class BeterBee extends JavaPlugin implements Listener {
                     if (bl.getType() == Material.BEEHIVE)
                     {
                         Beehive ul = (Beehive) bl.getBlockData();
+
+
                         player.sendMessage("Ten ul ma "+ul.getHoneyLevel()+" miodu!");
+                      ///  player.sendMessage("Ten ul zamieszkuje "+pszczoly+" pszczul!");
                         return true;
                     }
                     else {
@@ -133,12 +136,12 @@ public final class BeterBee extends JavaPlugin implements Listener {
                      if (ul.getHoneyLevel() == PoziomMiodurozmnazania ) {
                          if(bee.isAdult()){
                              Random random = new Random();
-                             if (random.nextInt(1,SzansaNaRozmnożenie)==1){
-
+                             if (random.nextInt(1,SzansaNaRozmnożenie)==2){
 
                                  //jeśli pszcoła będzie czuła miłość zrobi to
                                 if(bee.canBreed())
                                 {
+                                    //World world = bee.getWorld();
                                     bee.setLoveModeTicks(400);
                                }
                              }
@@ -195,8 +198,9 @@ public final class BeterBee extends JavaPlugin implements Listener {
             bee.setCanPickupItems(true);
             bee.setCustomNameVisible(true);
             bee.setCustomName("Ognista Pszczoła");
-            bee.setFireTicks(800);
+            bee.setVisualFire(true);
             bee.setGlowing(true);
+            bee.setRemoveWhenFarAway(true);
 
         }
 
