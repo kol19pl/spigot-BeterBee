@@ -23,6 +23,8 @@ import java.util.Random;
 public final class BeterBee extends JavaPlugin implements Listener {
 
     Boolean debag = true;
+    public int PoziomMiodurozmnazania = 3;
+    public int SzansaNaRozmnożenie = 10;
 
 
     @Override
@@ -62,7 +64,7 @@ public final class BeterBee extends JavaPlugin implements Listener {
                 Player player = (Player) sender;
 
                 if (args[0].equals("miud")){
-                    Block bl = player.getTargetBlock(5);
+                    Block bl = player.getTargetBlock(10);
                     if (bl.getType() == Material.BEEHIVE)
                     {
                         Beehive ul = (Beehive) bl;
@@ -119,12 +121,17 @@ public final class BeterBee extends JavaPlugin implements Listener {
                      Beehive ul = (Beehive) ulblock.getBlockData();
 
 
-                     if (ul.getHoneyLevel() == ul.getMaximumHoneyLevel()) {
+                     if (ul.getHoneyLevel() == PoziomMiodurozmnazania ) {
                          if(bee.isAdult()){
-                             if(bee.canBreed())
-                             {
+                             Random random = new Random();
+                             if (random.nextInt(1,SzansaNaRozmnożenie)==1){
 
-                               bee.setLoveModeTicks(400);
+
+                                 //jeśli pszcoła będzie czuła miłość zrobi to
+                                if(bee.canBreed())
+                                {
+                                    bee.setLoveModeTicks(400);
+                               }
                              }
 
                          }
